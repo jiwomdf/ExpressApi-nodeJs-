@@ -1,8 +1,13 @@
 const express = require('express')
+const morgan = require('morgan')
 
 const app = express()
 
 app.listen(3000)
+
+//middleware & static files
+app.use(express.static('public'))
+app.use(morgan('dev'))
 
 //register view engine
 app.set('view engine', 'ejs') // --> default looking in `views` directory
