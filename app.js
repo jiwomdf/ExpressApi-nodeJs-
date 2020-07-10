@@ -2,6 +2,7 @@ const express = require('express')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
 const blogRoutes = require('./routes/blogRoutes')
+const animalRoutes = require('./routes/animalRoutes')
 
 const app = express()
 
@@ -17,6 +18,7 @@ app.use(morgan('dev'))
 
 //blog routes
 app.use('/blogs/', blogRoutes)
+app.use('/animal/', animalRoutes)
 
 //register view engine
 app.set('view engine', 'ejs') // --> default looking in `views` directory
