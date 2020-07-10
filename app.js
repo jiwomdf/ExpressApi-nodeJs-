@@ -3,6 +3,10 @@ const morgan = require('morgan')
 
 const app = express()
 
+// connect to mongoDB
+const dbURI = 'mongodb+srv://expressApi:MantapDjiwa123@nodetuts.akanr.mongodb.net/note-tuts?retryWrites=true&w=majority'
+
+
 app.listen(3000)
 
 //middleware & static files
