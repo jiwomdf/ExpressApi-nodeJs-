@@ -5,11 +5,17 @@
     <%- include("./partials/nav.ejs") %>
 
     <div class="create-blog content">
-        <form action="/blogs" method="POST">
-            <input type="text" id="title" name="title" placeholder="Animal Name" required>
-            <input type="text" id="snippet" name="snippet" placeholder="Expression" required>
-            <input type="text" id="snippet" name="snippet" placeholder="Origin" required>
-            <input type="text" id="snippet" name="snippet" placeholder="Diet" required>
+        <form action="/animal" method="POST">
+            <input type="text" id="name" name="name" placeholder="Animal Name" required>
+
+            <input type="radio" id="isBaby" name="isBaby" value="true">
+            <label for="isBaby">isBaby</label><br>
+            <input type="radio" id="isNotBaby" name="isBaby" value="false">
+            <label for="isNotBaby">isNotBaby</label><br>
+
+            <input type="text" id="expression" name="expression" placeholder="Expression" required>
+            <input type="text" id="origin" name="origin" placeholder="Origin" required>
+            <input type="text" id="diet" name="diet" placeholder="Diet" required>
             <button>Submit</button>
         </form>
     </div>

@@ -7,8 +7,12 @@ const animalRoutes = require('./routes/animalRoutes')
 const app = express()
 
 // connect to mongoDB
+const dbURI = 'mongodb+srv://expressApi:MantapDjiwa123@nodetuts.akanr.mongodb.net/note-tuts?retryWrites=true&w=majority'
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(res => app.listen(3000))
+    .then(res => {
+        app.listen(3000)
+        console.log("app listen in 3000")
+    })
     .catch(err => console.log(err))
 
 //middleware & static files

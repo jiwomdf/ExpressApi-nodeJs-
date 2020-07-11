@@ -24,7 +24,7 @@ const animal_create_post = (req, res) => {
 }
 
 const animal_create_get = (req, res) => {
-    res.render('createAnimal', { title: 'Create a new Animal' })
+    res.render('createAnimal', { title: 'Create new Animal' })
 }
 
 const animal_delete = (req, res) => {
