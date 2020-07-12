@@ -20,7 +20,7 @@ app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
 app.use(morgan('dev'))
 
-//blog routes
+//routes
 app.use('/blogs/', blogRoutes)
 app.use('/animal/', animalRoutes)
 
