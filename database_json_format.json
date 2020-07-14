@@ -1,0 +1,25 @@
+{
+    "Animal": {
+        "name": "Dog",
+        "expression": "Smile",
+        "diet": "carnivora",
+        "isBaby": true,
+        "isAlone": true,
+        "binaryImage": "001010101011101011010",
+        "tags": [
+            "funny",
+            "smile",
+            "dog"
+        ]
+    },
+    "Blog": {
+        "title": "Funny baby dog photos",
+        "snippet": "Funny baby dog photos",
+        "body": "This is the photo of the funny dogos",
+        "picturesId": [
+            "13132",
+            "321312",
+            "9912"
+        ]
+    }
+}
