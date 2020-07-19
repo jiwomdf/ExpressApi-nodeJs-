@@ -15,7 +15,6 @@ const animal_get = async (req, res) => {
     catch (err) {
         returnFormat.error400(res, err)
     }
-
 }
 
 const animal_get_byID = async (req, res) => {
@@ -32,7 +31,6 @@ const animal_get_byID = async (req, res) => {
     catch (err) {
         returnFormat.error400(res, err)
     }
-
 }
 
 const animal_create_post = async (req, res) => {
