@@ -2,7 +2,7 @@ const Blog = require('../model/blog')
 const returnFormat = require('../controllers/returnFormat')
 const { ObjectId } = require('mongodb')
 
-const blog_get = (req, res) => {
+const blog_get = async (req, res) => {
 
     try {
         const retVal = await Blog.find().sort({ createdAt: -1 })
@@ -17,7 +17,7 @@ const blog_get = (req, res) => {
     }
 }
 
-const blog_get_byID = (req, res) => {
+const blog_get_byID = async (req, res) => {
     const id = req.params.id
 
     try {
@@ -33,7 +33,7 @@ const blog_get_byID = (req, res) => {
     }
 }
 
-const blog_post = (req, res) => {
+const blog_post = async (req, res) => {
 
     const blog = new Blog(req.body)
 
@@ -67,7 +67,7 @@ const blog_patch = async (req, res) => {
     }
 }
 
-const blog_delete = (req, res) => {
+const blog_delete = async (req, res) => {
     const id = req.params.id
 
     try {

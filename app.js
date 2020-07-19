@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 //routes
-app.use('/blogs/', blogRoutes)
+app.use('/blog/', blogRoutes)
 app.use('/animal/', animalRoutes)
 
 //register view engine
