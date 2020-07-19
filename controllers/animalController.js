@@ -1,65 +1,93 @@
 const Animal = require('../model/animal')
+const returnFormat = require('../controllers/returnFormat')
+const { ObjectId } = require('mongodb')
 
-const animal_index = async (req, res) => {
+const animal_get = async (req, res) => {
 
     try {
         const retVal = await Animal.find().sort({ createdAt: -1 })
 
-        res.status(200).json({
-            'status': '200',
-            'messages': 'success',
-            'data': retVal
-        })
+        if (retVal)
+            returnFormat.success(res, retVal)
+        else
+            returnFormat.failed404(res)
     }
     catch (err) {
-        console.log(err)
+        returnFormat.error400(res, err)
     }
 
-    console.log("masuk_get")
 }
 
-const animal_details = (req, res) => {
+const animal_get_byID = async (req, res) => {
     const id = req.params.id
 
-    Animal.findById(id)
-        .then(retVal => res.render('detail', { blog: retVal, title: 'Animal Details' }))
-        .catch(err => console.log(err))
+    try {
+        const retVal = await Animal.findById(id)
+
+        if (retVal)
+            returnFormat.success(res, retVal)
+        else
+            returnFormat.failed404(res)
+    }
+    catch (err) {
+        returnFormat.error400(res, err)
+    }
+
 }
 
 const animal_create_post = async (req, res) => {
 
     const animal = new Animal(req.body)
 
-    const retVal = await animal.save()
-
     try {
-        res.status(200).json({
-            'status': '200',
-            'messages': 'success',
-            'data': retVal
-        })
+        const retVal = await animal.save()
+
+        if (retVal)
+            returnFormat.success(res, retVal)
+        else
+            returnFormat.failed404(res)
     }
-    catch (ex) {
-        console.log(err)
+    catch (err) {
+        returnFormat.error400(res, err)
     }
 }
 
-const animal_create_get = (req, res) => {
-    res.render('createAnimal', { title: 'Create new Animal' })
-}
+const animal_update_post = async (req, res) => {
 
-const animal_delete = (req, res) => {
     const id = req.params.id
 
-    Animal.findByIdAndDelete(id)
-        .then(retVal => res.json({ redirect: '/animal' }))
-        .catch(err => console.log(err))
+    try {
+        await Animal.updateOne({ _id: ObjectId(id) }, req.body, (err, retVal) => {
+            res.send(
+                (err === null) ? returnFormat.success(res, retVal) : returnFormat.error400(res)
+            )
+        })
+    }
+    catch (err) {
+        returnFormat.error400(res, err)
+    }
+}
+
+const animal_delete = async (req, res) => {
+    const id = req.params.id
+
+    try {
+        const retVal = await Animal.findByIdAndDelete(id)
+
+        if (retVal)
+            returnFormat.success(res, retVal)
+        else
+            returnFormat.failed404(res)
+    }
+    catch (err) {
+        returnFormat.error400(res, err)
+    }
 }
 
 module.exports = {
-    animal_index,
-    animal_details,
+    animal_get,
+    animal_get_byID,
     animal_create_post,
-    animal_create_get,
+    animal_update_post,
     animal_delete
 }
