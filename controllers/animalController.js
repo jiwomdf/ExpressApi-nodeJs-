@@ -33,7 +33,7 @@ const animal_get_byID = async (req, res) => {
     }
 }
 
-const animal_create_post = async (req, res) => {
+const animal_post = async (req, res) => {
 
     const animal = new Animal(req.body)
 
@@ -50,7 +50,7 @@ const animal_create_post = async (req, res) => {
     }
 }
 
-const animal_update_post = async (req, res) => {
+const animal_patch = async (req, res) => {
 
     const id = req.params.id
 
@@ -85,7 +85,7 @@ const animal_delete = async (req, res) => {
 module.exports = {
     animal_get,
     animal_get_byID,
-    animal_create_post,
-    animal_update_post,
+    animal_post,
+    animal_patch,
     animal_delete
 }

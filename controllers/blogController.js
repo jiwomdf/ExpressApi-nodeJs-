@@ -1,44 +1,93 @@
 const Blog = require('../model/blog')
+const returnFormat = require('../controllers/returnFormat')
+const { ObjectId } = require('mongodb')
 
-const blog_index = (req, res) => {
-    Blog.find().sort({ createdAt: -1 })
-        .then(retval => res.render('index', { title: 'All Blog', blogs: retval }))
-        .catch(err => console.log(err))
+const blog_get = (req, res) => {
+
+    try {
+        const retVal = await Blog.find().sort({ createdAt: -1 })
+
+        if (retVal)
+            returnFormat.success(res, retVal)
+        else
+            returnFormat.failed404(res)
+    }
+    catch (err) {
+        returnFormat.error400(res, err)
+    }
 }
 
-const blog_details = (req, res) => {
+const blog_get_byID = (req, res) => {
     const id = req.params.id
 
-    Blog.findById(id)
-        .then(retVal => res.render('detail', { blog: retVal, title: 'Blog Details' }))
-        .catch(err => console.log(err))
+    try {
+        const retVal = await Blog.findById(id)
+
+        if (retVal)
+            returnFormat.success(res, retVal)
+        else
+            returnFormat.failed404(res)
+    }
+    catch (err) {
+        returnFormat.error400(res, err)
+    }
 }
 
-const blog_create_post = (req, res) => {
+const blog_post = (req, res) => {
 
     const blog = new Blog(req.body)
 
-    blog.save()
-        .then(retval => res.redirect('/blogs'))
-        .catch(err => console.log(err))
+    try {
+        const retVal = await blog.save()
+
+        if (retVal)
+            returnFormat.success(res, retVal)
+        else
+            returnFormat.failed404(res)
+    }
+    catch (err) {
+        returnFormat.error400(res, err)
+    }
+
 }
 
-const blog_create_get = (req, res) => {
-    res.render('createBlog', { title: 'Create a new blog' })
+const blog_patch = async (req, res) => {
+
+    const id = req.params.id
+
+    try {
+        await Blog.updateOne({ _id: ObjectId(id) }, req.body, (err, retVal) => {
+            res.send(
+                (err === null) ? returnFormat.success(res, retVal) : returnFormat.error400(res)
+            )
+        })
+    }
+    catch (err) {
+        returnFormat.error400(res, err)
+    }
 }
 
 const blog_delete = (req, res) => {
     const id = req.params.id
 
-    Blog.findByIdAndDelete(id)
-        .then(retVal => res.json({ redirect: '/blogs' }))
-        .catch(err => console.log(err))
+    try {
+        const retVal = await Blog.findByIdAndDelete(id)
+
+        if (retVal)
+            returnFormat.success(res, retVal)
+        else
+            returnFormat.failed404(res)
+    }
+    catch (err) {
+        returnFormat.error400(res, err)
+    }
+
 }
 
 module.exports = {
-    blog_index,
-    blog_details,
-    blog_create_post,
-    blog_create_get,
+    blog_get,
+    blog_get_byID,
+    blog_post,
+    blog_patch,
     blog_delete
 }

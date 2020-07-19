@@ -2,10 +2,10 @@ const express = require('express')
 const blogController = require('../controllers/blogController')
 const router = express.Router()
 
-router.get('/', blogController.blog_index)
-router.post('/', blogController.blog_create_post)
-router.get('/create', blogController.blog_create_get)
-router.get('/:id', blogController.blog_details)
+router.get('/', blogController.blog_get)
+router.post('/', blogController.blog_post)
+router.patch('/create', blogController.blog_patch)
+router.get('/:id', blogController.blog_get_byID)
 router.delete('/:id', blogController.blog_delete)
 
 router.get('/about', (req, res) => {
