@@ -4,13 +4,14 @@
         "expression": "Smile",
         "diet": "carnivora",
         "isBaby": true,
-        "isAlone": true,
+        "isOneAnimal": true,
         "binaryImage": "001010101011101011010",
         "tags": [
             "funny",
             "smile",
             "dog"
-        ]
+        ],
+        "createdAt": "1594752645997"
     },
     "Blog": {
         "title": "Funny baby dog photos",
@@ -20,6 +21,7 @@
             "13132",
             "321312",
             "9912"
-        ]
+        ],
+        "createdAt": "1594752645997"
     }
 }

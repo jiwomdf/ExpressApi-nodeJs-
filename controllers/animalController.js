@@ -1,9 +1,21 @@
 const Animal = require('../model/animal')
 
-const animal_index = (req, res) => {
-    Animal.find().sort({ createdAt: -1 })
-        .then(retval => res.render('index', { title: 'All Animal', blogs: retval }))
-        .catch(err => console.log(err))
+const animal_index = async (req, res) => {
+
+    try {
+        const retVal = await Animal.find().sort({ createdAt: -1 })
+
+        res.status(200).json({
+            'status': '200',
+            'messages': 'success',
+            'data': retVal
+        })
+    }
+    catch (err) {
+        console.log(err)
+    }
+
+    console.log("masuk_get")
 }
 
 const animal_details = (req, res) => {
@@ -14,13 +26,22 @@ const animal_details = (req, res) => {
         .catch(err => console.log(err))
 }
 
-const animal_create_post = (req, res) => {
+const animal_create_post = async (req, res) => {
 
     const animal = new Animal(req.body)
 
-    animal.save()
-        .then(retval => res.redirect('/animal'))
-        .catch(err => console.log(err))
+    const retVal = await animal.save()
+
+    try {
+        res.status(200).json({
+            'status': '200',
+            'messages': 'success',
+            'data': retVal
+        })
+    }
+    catch (ex) {
+        console.log(err)
+    }
 }
 
 const animal_create_get = (req, res) => {

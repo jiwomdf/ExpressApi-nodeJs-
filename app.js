@@ -3,10 +3,12 @@ const morgan = require('morgan')
 const mongoose = require('mongoose')
 const blogRoutes = require('./routes/blogRoutes')
 const animalRoutes = require('./routes/animalRoutes')
+const bodyParser = require('body-parser')
 
 const app = express()
 
 // connect to mongoDB
+const dbURI = 'mongodb://192.168.99.100:27019/?readPreference=primary&appname=MongoDB%20Compass%20Community&ssl=false'
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(res => {
         app.listen(3000)
@@ -18,6 +20,8 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
 app.use(morgan('dev'))
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 //routes
 app.use('/blogs/', blogRoutes)
