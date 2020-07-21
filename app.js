@@ -3,7 +3,7 @@ const morgan = require('morgan')
 const mongoose = require('mongoose')
 const blogRoutes = require('./routes/blogRoutes')
 const animalRoutes = require('./routes/animalRoutes')
-const bodyParser = require('body-parser')
+const userRoutes = require('./routes/userRoutes')
 
 const app = express()
 
@@ -16,27 +16,16 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     })
     .catch(err => console.log(err))
 
-//middleware & static files
+//middleware
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
 app.use(morgan('dev'))
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.json())
 
 //routes
 app.use('/blog/', blogRoutes)
 app.use('/animal/', animalRoutes)
-
-//register view engine
-app.set('view engine', 'ejs') // --> default looking in `views` directory
-
-app.get('/', (req, res) => {
-    res.redirect('/blogs')
-})
-
-
-/* 404 page must be in the bottom */
-// 404 page
+app.use('/user', userRoutes)
 app.use((req, res) => {
-    res.status(404).render('404', { title: '404' })
+    res.status(404).send('404 not found')
 })

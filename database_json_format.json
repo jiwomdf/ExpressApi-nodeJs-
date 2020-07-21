@@ -1,4 +1,14 @@
 {
+    "User": {
+        "userName": "jiwomdf",
+        "password": "dq3123d135sf341",
+        "name": "Katili Jiwo AW",
+        "role": [
+            "CEO",
+            "Admin"
+        ],
+        "email": "mdf.jiwo@outlook.com"
+    },
     "Animal": {
         "name": "Dog",
         "expression": "Smile",
