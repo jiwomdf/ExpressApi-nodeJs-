@@ -8,7 +8,7 @@ const animal_get = async (req, res) => {
         const retVal = await Animal.find().sort({ createdAt: -1 })
 
         if (retVal)
-            returnFormat.success(res, retVal)
+            returnFormat.success200(res, retVal)
         else
             returnFormat.failed404(res)
     }
@@ -24,7 +24,7 @@ const animal_get_byID = async (req, res) => {
         const retVal = await Animal.findById(id)
 
         if (retVal)
-            returnFormat.success(res, retVal)
+            returnFormat.success200(res, retVal)
         else
             returnFormat.failed404(res)
     }
@@ -41,7 +41,7 @@ const animal_post = async (req, res) => {
         const retVal = await animal.save()
 
         if (retVal)
-            returnFormat.success(res, retVal)
+            returnFormat.success200(res, retVal)
         else
             returnFormat.failed404(res)
     }
@@ -57,7 +57,7 @@ const animal_patch = async (req, res) => {
     try {
         await Animal.updateOne({ _id: ObjectId(id) }, req.body, (err, retVal) => {
             res.send(
-                (err === null) ? returnFormat.success(res, retVal) : returnFormat.error400(res)
+                (err === null) ? returnFormat.success200(res, retVal) : returnFormat.error400(res)
             )
         })
     }
@@ -73,7 +73,7 @@ const animal_delete = async (req, res) => {
         const retVal = await Animal.findByIdAndDelete(id)
 
         if (retVal)
-            returnFormat.success(res, retVal)
+            returnFormat.success200(res, retVal)
         else
             returnFormat.failed404(res)
     }

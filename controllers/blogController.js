@@ -8,7 +8,7 @@ const blog_get = async (req, res) => {
         const retVal = await Blog.find().sort({ createdAt: -1 })
 
         if (retVal)
-            returnFormat.success(res, retVal)
+            returnFormat.success200(res, retVal)
         else
             returnFormat.failed404(res)
     }
@@ -24,7 +24,7 @@ const blog_get_byID = async (req, res) => {
         const retVal = await Blog.findById(id)
 
         if (retVal)
-            returnFormat.success(res, retVal)
+            returnFormat.success200(res, retVal)
         else
             returnFormat.failed404(res)
     }
@@ -41,7 +41,7 @@ const blog_post = async (req, res) => {
         const retVal = await blog.save()
 
         if (retVal)
-            returnFormat.success(res, retVal)
+            returnFormat.success200(res, retVal)
         else
             returnFormat.failed404(res)
     }
@@ -58,7 +58,7 @@ const blog_patch = async (req, res) => {
     try {
         await Blog.updateOne({ _id: ObjectId(id) }, req.body, (err, retVal) => {
             res.send(
-                (err === null) ? returnFormat.success(res, retVal) : returnFormat.error400(res)
+                (err === null) ? returnFormat.success200(res, retVal) : returnFormat.error400(res)
             )
         })
     }
@@ -74,7 +74,7 @@ const blog_delete = async (req, res) => {
         const retVal = await Blog.findByIdAndDelete(id)
 
         if (retVal)
-            returnFormat.success(res, retVal)
+            returnFormat.success200(res, retVal)
         else
             returnFormat.failed404(res)
     }

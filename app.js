@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const express = require('express')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
@@ -10,7 +12,7 @@ const authRoutes = require('./routes/authRoutes')
 const app = express()
 
 // connect to mongoDB
-const dbURI = 'mongodb://192.168.99.100:27019/?readPreference=primary&appname=MongoDB%20Compass%20Community&ssl=false'
+const dbURI = 'mongodb://192.168.99.100:27019/AnimalDatabase'
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(res => {
         app.listen(3000)
