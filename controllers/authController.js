@@ -1,4 +1,5 @@
 const bcryipt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const User = require('../model/user')
 const returnFormat = require('./returnFormat')
 
@@ -6,21 +7,20 @@ let refreshTokens = []
 
 const login = async (req, res) => {
 
-    const user = await User.find({ userName: req.body.userName })
-
     console.log(req.body)
-    console.log(user.length)
+    const user = await User.findOne({ userName: req.body.userName })
+
+    console.log(user)
 
     if (user.length <= 0)
         return returnFormat.error400(res, 'Cannot find user')
 
     try {
         const isValid = await bcryipt.compare(req.body.password, user.password)
-
         if (isValid)
             createJwt(res, user)
         else
-            res.send("not allowed")
+            return returnFormat.error500(res, err)
     }
     catch (err) {
         return returnFormat.error500(res, err)

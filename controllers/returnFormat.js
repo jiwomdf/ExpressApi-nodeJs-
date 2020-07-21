@@ -35,7 +35,7 @@ function error500(res, err) {
 
 module.exports = {
     success200, //success
+    error400, //bad reques
     failed404, //page not found
-    error400, //bad request,
     error500 //internal server error
 }
