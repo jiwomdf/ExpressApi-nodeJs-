@@ -1,4 +1,9 @@
 {
+    "Auth": {
+        "userName": "jiwomdf",
+        "refreshToken": "123456789",
+        "loginAt": "1594752645997"
+    },
     "User": {
         "userName": "jiwomdf",
         "password": "dq3123d135sf341",

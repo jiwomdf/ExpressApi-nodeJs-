@@ -4,7 +4,7 @@ const returnFormat = require('./returnFormat')
 
 const user_register = async (req, res) => {
 
-    const userRequest = req.body.user
+    const userRequest = req.body
 
     const user = await User.find({ userName: userRequest.userName })
 
@@ -23,8 +23,10 @@ const user_register = async (req, res) => {
 
             User.insertMany(user)
             console.log("registered", userRequest)
+
+            returnFormat.success200(res, user)
         }
-        catch{
+        catch (err) {
             returnFormat.error500(res, err)
         }
     }
