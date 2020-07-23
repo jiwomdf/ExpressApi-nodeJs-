@@ -19,7 +19,7 @@ const login = async (req, res) => {
             insertAuth(res, user, refreshToken)
         }
         else
-            return returnFormat.error500(res, err)
+            return returnFormat.error500(res, "encription invalid")
     }
     catch (err) {
         return returnFormat.error500(res, err)
@@ -40,6 +40,42 @@ const logout = async (req, res) => {
     catch (err) {
         return returnFormat.error400(res, err)
     }
+}
+
+const token = ('/token', async (req, res) => {
+
+    const refreshToken = req.body.refreshToken
+
+    if (refreshToken == null)
+        return res.sendStatus(401)
+
+    const auths = await Auth.find({ refreshToken: refreshToken })
+    console.log(auths)
+
+    let isExist = checkAuthsExist(auths, refreshToken)
+
+    if (!isExist)
+        return res.sendStatus(403)
+
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) return status.sendStatus(403)
+
+        const userId = { name: user.name }
+
+        const accessToken = generateAccessToken(userId)
+
+        const retVal = { userName: req.body.userName, accessToken: accessToken }
+        res.json(retVal)
+    })
+})
+
+function checkAuthsExist(auths, refreshToken) {
+    for (let i = 0; i < auths.length; i++) {
+        if (auths[i].refreshToken == refreshToken)
+            return true
+    }
+
+    return false
 }
 
 function createJwt(res, user) {
@@ -64,7 +100,9 @@ function generateAccessToken(userName) {
 }
 
 
+
 module.exports = {
     login,
-    logout
+    logout,
+    token
 }
