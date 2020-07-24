@@ -96,7 +96,7 @@ function insertAuth(res, user, refreshToken) {
 }
 
 function generateAccessToken(userName) {
-    return jwt.sign(userName, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' })
+    return jwt.sign(userName, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '60s' })
 }
 
 

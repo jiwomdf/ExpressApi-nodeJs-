@@ -37,6 +37,8 @@ const blog_post = async (req, res) => {
 
     const blog = new Blog(req.body)
 
+    console.log(req.body)
+    returnFormat.success200(res, retVal)
     try {
         const retVal = await blog.save()
 
