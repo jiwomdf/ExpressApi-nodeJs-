@@ -21,15 +21,6 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     })
     .catch(err => console.log(err))
 
-/* let gfs
-conn.once('open', () => {
-    // Init stream
-    gfs = Grid(conn.db, mongoose.mongo)
-    gfs.collection('uploads')
-})
-
-const upload = multer({ storage }); */
-
 //middleware
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))

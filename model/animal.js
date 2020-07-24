@@ -8,7 +8,7 @@ const animalSchema = new Schema({
     isBaby: { type: Boolean, required: true },
     isOneAnimal: { type: Boolean, required: true },
     binaryImage: { type: String, required: true },
-    tags: { type: [String], required: true },
+    tags: { type: [String] },
     createdAt: { type: String, default: Date.now }
 })
 

@@ -45,6 +45,10 @@ const logout = async (req, res) => {
 const token = ('/token', async (req, res) => {
 
     const refreshToken = req.body.refreshToken
+    const accessToken = req.body.accessToken
+
+    if (accessToken == null)
+        return res.sendStatus(401)
 
     if (refreshToken == null)
         return res.sendStatus(401)
