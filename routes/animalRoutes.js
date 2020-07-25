@@ -8,5 +8,5 @@ router.post('/', authorizeMiddleware, animalController.animal_post)
 router.patch('/:id', authorizeMiddleware, animalController.animal_patch)
 router.delete('/:id', authorizeMiddleware, animalController.animal_delete)
 router.get('/:id', animalController.animal_get_byID)
-
+router.post('/picture', animalController.animal_get_with_img)
 module.exports = router

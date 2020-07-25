@@ -8,7 +8,7 @@ const blogRoutes = require('./routes/blogRoutes')
 const animalRoutes = require('./routes/animalRoutes')
 const userRoutes = require('./routes/userRoutes')
 const authRoutes = require('./routes/authRoutes')
-const uploadRoutes = require('./routes/uploadRoutes')
+const imageRoutes = require('./routes/imageRoutes')
 
 const app = express()
 
@@ -20,6 +20,9 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
         console.log("app listen in 3000")
     })
     .catch(err => console.log(err))
+
+//register view engine
+app.use('/public', express.static('public'));
 
 //middleware
 app.use(express.static('public'))
@@ -33,8 +36,7 @@ app.use('/blog/', blogRoutes)
 app.use('/animal/', animalRoutes)
 app.use('/user/', userRoutes)
 app.use('/auth/', authRoutes)
-app.use('/upload/', uploadRoutes);
-
+app.use('/image/', imageRoutes);
 
 app.use((req, res) => {
     res.status(404).send('404 not found')

@@ -1,5 +1,5 @@
 const express = require('express')
-const uploadController = require('../controllers/uploadController')
+const imageController = require('../controllers/imageController')
 const authorizeMiddleware = require('./authorizeMiddleware')
 const returnFormat = require('../controllers/returnFormat')
 const router = express.Router()
@@ -17,16 +17,26 @@ const fileFilter = function (req, file, cb) {
 
     cb(null, true)
 }
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './public/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, `${file.originalname}.jpg`)
+    }
+})
 
 const upload = multer({
-    dest: './uploads/',
+    //dest: './public/',
+    storage: storage,
     fileFilter,
     limits: {
         fileSize: 10000
     }
 });
 
-router.post('/', [authorizeMiddleware, upload.single('file')], uploadController.upload_post);
+router.post('/', [authorizeMiddleware, upload.single('file')], imageController.image_post);
+router.get('/', imageController.image_get)
 
 router.use(function (err, req, res, next) {
 

@@ -34,6 +34,49 @@ const animal_get_byID = async (req, res) => {
     }
 }
 
+const animal_get_with_img = async (req, res) => {
+
+    try {
+        const dbRetVal = await Animal.aggregate([
+            {
+                $lookup:
+                {
+                    from: "images",
+                    localField: "binaryImage",
+                    foreignField: "originalname",
+                    as: "animal_pic"
+                }
+            },
+            { $unwind: '$animal_pic' }
+        ])
+
+        let listRetVal = []
+        dbRetVal.forEach(itm => {
+            const retVal = {
+                "tags": itm.tags,
+                "name": itm.name,
+                "expression": itm.expression,
+                "diet": itm.diet,
+                "isBaby": itm.isBaby,
+                "isOneAnimal": itm.isOneAnimal,
+                "binaryImage": itm.binaryImage,
+                "destination": itm.animal_pic.destination,
+                "imagePath": `${process.env.SERVER_PUBLIC_URL}${itm.animal_pic.originalname}.jpg`
+            }
+
+            listRetVal.push(retVal)
+        })
+
+        if (listRetVal)
+            returnFormat.success200(res, listRetVal)
+        else
+            returnFormat.failed404(res)
+    }
+    catch (err) {
+        returnFormat.error400(res, err)
+    }
+}
+
 const animal_post = async (req, res) => {
 
     let validate = await validateAnimalPost(req.body)
@@ -41,22 +84,22 @@ const animal_post = async (req, res) => {
 
     const animal = new Animal(req.body)
 
-    // try {
-    //     const retVal = await animal.save()
+    try {
+        const retVal = await animal.save()
 
-    //     if (retVal)
-    //         returnFormat.success200(res, retVal)
-    //     else
-    //         returnFormat.failed404(res)
-    // }
-    // catch (err) {
-    //     returnFormat.error400(res, err)
-    // }
+        if (retVal)
+            returnFormat.success200(res, retVal)
+        else
+            returnFormat.failed404(res)
+    }
+    catch (err) {
+        returnFormat.error400(res, err)
+    }
 }
 
 const animal_patch = async (req, res) => {
 
-    let validate = validateAnimalPost(req.body)
+    let validate = await validateAnimalPost(req.body)
     if (!validate.isValid) return returnFormat.validate422(res, validate.message)
 
     const id = req.params.id
@@ -93,7 +136,7 @@ const animal_delete = async (req, res) => {
 const validateAnimalPost = async (animal) => {
 
     const schema = Joi.object({
-        name: Joi.string().alphanum().min(1).max(30).required(),
+        name: Joi.string().min(1).max(30).required(),
 
         expression: Joi.string()
             .valid("Happy", "Sad", "Inocent", "Cry")
@@ -105,8 +148,10 @@ const validateAnimalPost = async (animal) => {
 
         isBaby: Joi.boolean().required(),
         isOneAnimal: Joi.boolean().required(),
-        binaryImage: Joi.string().alphanum().max(10).min(10).required(),
-        tags: Joi.array().items(Joi.string())
+        binaryImage: Joi.string().min(10).max(50).required(),
+        tags: Joi.array().items(Joi.string()),
+        story: Joi.string().min(0).max(100),
+        userName: Joi.string().required()
     })
 
     try {
@@ -124,6 +169,7 @@ const validateAnimalPost = async (animal) => {
 module.exports = {
     animal_get,
     animal_get_byID,
+    animal_get_with_img,
     animal_post,
     animal_patch,
     animal_delete

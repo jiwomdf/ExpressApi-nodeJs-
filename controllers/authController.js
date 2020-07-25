@@ -50,13 +50,12 @@ const validateLogin = async user => {
 const logout = async (req, res) => {
 
     try {
-        console.log(req.body.userName)
         await Auth.deleteMany({
             userName: {
                 $regex: req.body.userName
             }
         })
-        return returnFormat.noContent204(res, "logout")
+        return returnFormat.noContent204(res, req.body.userName + " logout")
     }
     catch (err) {
         return returnFormat.error400(res, err)
