@@ -49,6 +49,15 @@ function failed404(res) {
     })
 }
 
+function validate422(res, err) {
+    console.log(err)
+    res.status(422).json({
+        'status': '422',
+        'messages': err,
+        'data': {}
+    })
+}
+
 function error500(res, err) {
     console.log(err)
     res.status(500).json({
@@ -65,5 +74,6 @@ module.exports = {
     unauthorized401, //unathorized
     forbidden403, //forbidden
     failed404, //page not found
+    validate422, //validation error
     error500 //internal server error
 }

@@ -3,26 +3,47 @@ const jwt = require('jsonwebtoken')
 const User = require('../model/user')
 const Auth = require('../model/auth')
 const returnFormat = require('./returnFormat')
+const Joi = require('@hapi/joi')
 
 const login = async (req, res) => {
 
-    console.log("Login in ", req.body)
+    let validate = await validateLogin(req.body)
+    if (!validate.isValid) return returnFormat.validate422(res, validate.message)
+
     const user = await User.findOne({ userName: req.body.userName })
 
-    if (user.length <= 0)
-        return returnFormat.error400(res, 'Cannot find user')
+    if (user == null || user.length <= 0)
+        return returnFormat.validate422(res, 'Cannot find user')
 
     try {
         const isValid = await bcryipt.compare(req.body.password, user.password)
         if (isValid) {
             let refreshToken = createJwt(res, user)
             insertAuth(res, user, refreshToken)
+            console.log("Login in ", req.body)
         }
         else
-            return returnFormat.error500(res, "encription invalid")
+            return returnFormat.validate422(res, "password incorrect")
     }
     catch (err) {
         return returnFormat.error500(res, err)
+    }
+}
+
+const validateLogin = async user => {
+    const schema = Joi.object({
+        userName: Joi.string().alphanum().min(3).max(15).required(),
+        password: Joi.string().alphanum().required(),
+    })
+
+    try {
+        const result = await schema.validateAsync(user)
+
+        if (result.error == null) return { isValid: true, message: "" }
+        else return { isValid: false, message: result.error.toString() }
+    }
+    catch (err) {
+        return { isValid: false, message: err.details[0].message }
     }
 }
 

@@ -1,10 +1,15 @@
 const bcryipt = require('bcrypt')
 const User = require('../model/user')
 const returnFormat = require('./returnFormat')
+const Joi = require('@hapi/joi')
 
 const user_register = async (req, res) => {
 
     const userRequest = req.body
+
+    let validate = await validateRegister(req.body)
+
+    if (!validate.isValid) return returnFormat.validate422(res, validate.message)
 
     const user = await User.find({ userName: userRequest.userName })
 
@@ -32,6 +37,26 @@ const user_register = async (req, res) => {
     }
     else
         return returnFormat.error400(res, 'user already exist')
+}
+
+const validateRegister = async user => {
+    const schema = Joi.object({
+        userName: Joi.string().alphanum().min(3).max(15).required(),
+        password: Joi.string().alphanum().min(8).max(30).required(),
+        name: Joi.string().alphanum().min(3).max(15).required(),
+        email: Joi.string().email().required(),
+        role: Joi.array().items(Joi.string())
+    })
+
+    try {
+        const result = await schema.validateAsync(user)
+
+        if (result.error == null) return { isValid: true, message: "" }
+        else return { isValid: false, message: result.error.toString() }
+    }
+    catch (err) {
+        return { isValid: false, message: err.details[0].message }
+    }
 }
 
 const user_get = async (req, res) => {

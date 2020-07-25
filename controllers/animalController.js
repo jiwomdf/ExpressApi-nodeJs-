@@ -1,5 +1,6 @@
 const Animal = require('../model/animal')
 const returnFormat = require('../controllers/returnFormat')
+const Joi = require('@hapi/joi')
 const { ObjectId } = require('mongodb')
 
 const animal_get = async (req, res) => {
@@ -35,8 +36,8 @@ const animal_get_byID = async (req, res) => {
 
 const animal_post = async (req, res) => {
 
-    let isValid = validateAnimalPost(req.body)
-    if (!isValid) returnFormat.error400(res, "rijected on validation animal_post")
+    let validate = await validateAnimalPost(req.body)
+    if (!validate.isValid) returnFormat.validate422(res, validate.message)
 
     const animal = new Animal(req.body)
 
@@ -55,8 +56,8 @@ const animal_post = async (req, res) => {
 
 const animal_patch = async (req, res) => {
 
-    let isValid = validateAnimalPost(req.body)
-    if (!isValid) returnFormat.error400(res, "rijected on validation animal_post")
+    let validate = validateAnimalPost(req.body)
+    if (!validate.isValid) return returnFormat.validate422(res, validate.message)
 
     const id = req.params.id
 
@@ -89,27 +90,35 @@ const animal_delete = async (req, res) => {
 }
 
 /* Supporting functon */
-const validateAnimalPost = (animal) => {
+const validateAnimalPost = async (animal) => {
 
-    const arrDiet = ["Herbivore", "Carnivore", "Omnivore"]
+    const schema = Joi.object({
+        name: Joi.string().alphanum().min(1).max(30).required(),
 
-    if (animal.name == undefined || animal.name == null || animal.name.trim() == "")
-        return false
-    if (animal.expression == undefined || animal.expression == null || animal.expression.trim() == "")
-        return false
-    if (animal.diet == undefined || animal.diet == null || animal.diet.trim() == "")
-        return false
-    if (animal.isBaby == undefined || animal.isBaby == null)
-        return false
-    if (animal.isOneAnimal == undefined || animal.isOneAnimal == null)
-        return false
-    if (animal.binaryImage == undefined || animal.binaryImage == null || animal.binaryImage.trim() == "")
-        return false
-    if (animal.tags == undefined || animal.tags == null)
-        return false
+        expression: Joi.string()
+            .valid("Happy", "Sad", "Inocent", "Cry")
+            .required(),
 
-    if (!arrDiet.includes(animal.diet))
-        return false
+        diet: Joi.string()
+            .valid("Herbivore", "Carnivore", "Omnivore")
+            .required(),
+
+        isBaby: Joi.boolean().required(),
+        isOneAnimal: Joi.boolean().required(),
+        binaryImage: Joi.string().alphanum().max(10).min(10).required(),
+        tags: Joi.array().items(Joi.string())
+    })
+
+    try {
+        const result = await schema.validate(animal)
+
+        if (result.error == null) return { isValid: true, message: "" }
+        else return { isValid: false, message: result.error.toString() }
+    }
+    catch (err) {
+        return { isValid: false, message: err.details[0].message }
+    }
+
 }
 
 module.exports = {
