@@ -4,23 +4,27 @@ const User = require('../model/user')
 const Auth = require('../model/auth')
 const returnFormat = require('./returnFormat')
 const Joi = require('@hapi/joi')
+const { object } = require('@hapi/joi')
 
 const login = async (req, res) => {
 
     let validate = await validateLogin(req.body)
-    if (!validate.isValid) return returnFormat.validate422(res, validate.message)
+    if (!validate.isValid)
+        return returnFormat.validate422(res, validate.message)
 
+    /* check if user is exists in users collections */
     const user = await User.findOne({ userName: req.body.userName })
 
-    if (user == null || user.length <= 0)
+    if (user == null || user == undefined)
         return returnFormat.validate422(res, 'Cannot find user')
 
     try {
         const isValid = await bcryipt.compare(req.body.password, user.password)
         if (isValid) {
             let refreshToken = createJwt(res, user)
-            insertAuth(res, user, refreshToken)
-            console.log("Login in ", req.body)
+
+            /* check user login in auths collections */
+            await lookupAuth(req, user, refreshToken)
         }
         else
             return returnFormat.validate422(res, "password incorrect")
@@ -50,12 +54,16 @@ const validateLogin = async user => {
 const logout = async (req, res) => {
 
     try {
-        await Auth.deleteMany({
-            userName: {
-                $regex: req.body.userName
-            }
-        })
-        return returnFormat.noContent204(res, req.body.userName + " logout")
+        if (req.body.userName != null && req.body.userName != undefined && req.body.userName != "" && typeof req.body.userName == "string") {
+            await Auth.deleteMany({
+                userName: {
+                    $regex: req.body.userName
+                }
+            })
+            return returnFormat.noContent204(res, req.body.userName + " logout")
+        }
+        else
+            return returnFormat.error400(res, "empty userName")
     }
     catch (err) {
         return returnFormat.error400(res, err)
@@ -93,6 +101,31 @@ const token = ('/token', async (req, res) => {
     })
 })
 
+const checkLogin = ('/checkLogin', async (req, res) => {
+
+    const refreshToken = req.body.refreshToken
+    const accessToken = req.body.accessToken
+
+    if (accessToken == null)
+        return res.sendStatus(401)
+
+    if (refreshToken == null)
+        return res.sendStatus(401)
+
+    const auths = await Auth.find({ refreshToken: refreshToken })
+    console.log("auths")
+
+    let isExist = checkAuthsExist(auths, refreshToken)
+
+    const retVal = { userName: req.body.userName, refreshToken: refreshToken }
+
+    if (!isExist)
+        return res.sendStatus(403)
+    else
+        return returnFormat.success200(res, retVal)
+})
+
+
 function checkAuthsExist(auths, refreshToken) {
     for (let i = 0; i < auths.length; i++) {
         if (auths[i].refreshToken == refreshToken)
@@ -113,10 +146,23 @@ function createJwt(res, user) {
     return refreshToken
 }
 
-function insertAuth(res, user, refreshToken) {
-    const auth = { userName: user.userName, refreshToken: refreshToken }
-    Auth.insertMany(auth)
-    console.log(auth)
+async function lookupAuth(req, user, refreshToken) {
+    const auth = await Auth.findOne({ userName: req.body.userName })
+
+    if (auth != null && auth != undefined) {
+        await Auth.findOneAndUpdate({ userName: req.body.userName }, {
+            $set: {
+                "refreshToken": refreshToken,
+                "loginAt": Date.now()
+            }
+        })
+        console.log(auth.userName, "updated in auth")
+    }
+    else {
+        const auth = { userName: user.userName, refreshToken: refreshToken }
+        await Auth.insertMany(auth)
+        console.log(auth.userName, "inserted to auth")
+    }
 }
 
 function generateAccessToken(userName) {
@@ -128,5 +174,6 @@ function generateAccessToken(userName) {
 module.exports = {
     login,
     logout,
-    token
+    token,
+    checkLogin
 }

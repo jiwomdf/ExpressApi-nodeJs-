@@ -9,7 +9,7 @@ const animalSchema = new Schema({
     isOneAnimal: { type: Boolean, required: true },
     binaryImage: { type: String, required: true },
     tags: { type: [String] },
-    story: { type: String, required: true },
+    story: { type: String },
     userName: { type: String, required: true },
     createdAt: { type: String, default: Date.now }
 })

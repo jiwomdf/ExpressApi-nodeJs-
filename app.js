@@ -14,6 +14,7 @@ const app = express()
 
 // connect to mongoDB
 const dbURI = 'mongodb://192.168.99.100:27019/AnimalDatabase'
+mongoose.set('useFindAndModify', false); // --> due to the deprecation of findOneAndUpdate
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(res => {
         app.listen(3000)

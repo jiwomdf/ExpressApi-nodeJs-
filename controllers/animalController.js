@@ -148,7 +148,7 @@ const validateAnimalPost = async (animal) => {
 
         isBaby: Joi.boolean().required(),
         isOneAnimal: Joi.boolean().required(),
-        binaryImage: Joi.string().min(10).max(50).required(),
+        binaryImage: Joi.string().min(10).max(100).required(),
         tags: Joi.array().items(Joi.string()),
         story: Joi.string().min(0).max(100),
         userName: Joi.string().required()
