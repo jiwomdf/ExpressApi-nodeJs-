@@ -103,6 +103,8 @@ const animal_get_with_img_byUserName = async (req, res) => {
         let listRetVal = []
         dbRetVal.forEach(itm => {
             const retVal = {
+                "animalID": itm._id,
+                "imgID": itm.animal_pic._id,
                 "tags": itm.tags,
                 "name": itm.name,
                 "expression": itm.expression,
@@ -168,6 +170,8 @@ const animal_patch = async (req, res) => {
 
 const animal_delete = async (req, res) => {
     const id = req.params.id
+
+    console.log(id)
 
     try {
         const retVal = await Animal.findByIdAndDelete(id)

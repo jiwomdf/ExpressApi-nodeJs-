@@ -37,6 +37,7 @@ const upload = multer({
 
 router.post('/', [authorizeMiddleware, upload.single('file')], imageController.image_post);
 router.get('/', imageController.image_get)
+router.delete('/:id', authorizeMiddleware, imageController.image_delete)
 
 router.use(function (err, req, res, next) {
 

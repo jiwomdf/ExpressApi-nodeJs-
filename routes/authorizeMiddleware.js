@@ -5,10 +5,12 @@ module.exports = authorizeToken = (req, res, next) => {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
-    console.log(authHeader)
 
-    if (token == null)
+    if (token == null) {
+        console.log(authHeader, "Auth Header null")
         return returnFormat.unauthorized401(res)
+    }
+
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
         if (err) return returnFormat.forbidden403(res)
