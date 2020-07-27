@@ -77,6 +77,56 @@ const animal_get_with_img = async (req, res) => {
     }
 }
 
+const animal_get_with_img_byUserName = async (req, res) => {
+
+    const userName = req.params.userName
+
+    try {
+        const dbRetVal = await Animal.aggregate([
+            {
+                $match: {
+                    userName: { $regex: userName }
+                }
+            },
+            {
+                $lookup:
+                {
+                    from: "images",
+                    localField: "binaryImage",
+                    foreignField: "originalname",
+                    as: "animal_pic"
+                }
+            },
+            { $unwind: '$animal_pic' }
+        ])
+
+        let listRetVal = []
+        dbRetVal.forEach(itm => {
+            const retVal = {
+                "tags": itm.tags,
+                "name": itm.name,
+                "expression": itm.expression,
+                "diet": itm.diet,
+                "isBaby": itm.isBaby,
+                "isOneAnimal": itm.isOneAnimal,
+                "binaryImage": itm.binaryImage,
+                "destination": itm.animal_pic.destination,
+                "imagePath": `${process.env.SERVER_PUBLIC_URL}${itm.animal_pic.originalname}.jpg`
+            }
+
+            listRetVal.push(retVal)
+        })
+
+        if (listRetVal)
+            returnFormat.success200(res, listRetVal)
+        else
+            returnFormat.failed404(res)
+    }
+    catch (err) {
+        returnFormat.error400(res, err)
+    }
+}
+
 const animal_post = async (req, res) => {
 
     let validate = await validateAnimalPost(req.body)
@@ -150,7 +200,7 @@ const validateAnimalPost = async (animal) => {
         isOneAnimal: Joi.boolean().required(),
         binaryImage: Joi.string().min(10).max(100).required(),
         tags: Joi.array().items(Joi.string()),
-        story: Joi.string().min(0).max(100),
+        story: Joi.string().min(0).max(100).allow(''),
         userName: Joi.string().required()
     })
 
@@ -172,5 +222,6 @@ module.exports = {
     animal_get_with_img,
     animal_post,
     animal_patch,
-    animal_delete
+    animal_delete,
+    animal_get_with_img_byUserName
 }

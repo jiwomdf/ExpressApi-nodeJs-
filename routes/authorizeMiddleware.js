@@ -5,6 +5,8 @@ module.exports = authorizeToken = (req, res, next) => {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
+    console.log(authHeader)
+
     if (token == null)
         return returnFormat.unauthorized401(res)
 
