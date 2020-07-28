@@ -55,6 +55,7 @@ const animal_get_with_img = async (req, res) => {
             const retVal = {
                 "tags": itm.tags,
                 "name": itm.name,
+                "story": itm.story,
                 "expression": itm.expression,
                 "diet": itm.diet,
                 "isBaby": itm.isBaby,

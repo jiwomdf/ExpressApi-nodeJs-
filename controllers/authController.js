@@ -4,9 +4,13 @@ const User = require('../model/user')
 const Auth = require('../model/auth')
 const returnFormat = require('./returnFormat')
 const Joi = require('@hapi/joi')
-const { object } = require('@hapi/joi')
+const fetch = require('node-fetch');
 
 const login = async (req, res) => {
+
+    let validateCap = await validateCaptcha(req)
+    if (!validateCap.isValid)
+        return returnFormat.error400(res, validateCap.message)
 
     let validate = await validateLogin(req.body)
     if (!validate.isValid)
@@ -34,10 +38,37 @@ const login = async (req, res) => {
     }
 }
 
+const validateCaptcha = async req => {
+
+    if (!req.body.captcha)
+        return { isValid: false, message: 'Please select captcha' }
+
+    /* secret key */
+    const captchaSecretKey = process.env.CAPTCHA_SECRET_KEY
+
+    const verifyURL = "https://www.google.com/recaptcha/api/siteverify";
+
+    // Make a request to verifyURL
+    const body = await fetch(verifyURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `secret=${captchaSecretKey}&response=${req.body.captcha}`,
+    }).then(res => res.json());
+
+    // If not successful
+    console.log(body)
+    if (body.success == undefined || body.success == null || !body.success)
+        return { isValid: false, message: 'Failed captcha verification' }
+
+    // If successful
+    return { isValid: true, message: 'Captcha passed' }
+}
+
 const validateLogin = async user => {
     const schema = Joi.object({
         userName: Joi.string().alphanum().min(3).max(15).required(),
         password: Joi.string().alphanum().required(),
+        captcha: Joi.allow()
     })
 
     try {

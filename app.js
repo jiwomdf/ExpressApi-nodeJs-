@@ -13,7 +13,7 @@ const imageRoutes = require('./routes/imageRoutes')
 const app = express()
 
 // connect to mongoDB
-const dbURI = 'mongodb://192.168.99.100:27019/AnimalDatabase'
+const dbURI = process.env.DB_RUI
 mongoose.set('useFindAndModify', false); // --> due to the deprecation of findOneAndUpdate
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(res => {

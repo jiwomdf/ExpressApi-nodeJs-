@@ -20,7 +20,7 @@ function error400(res, err) {
     console.log(err)
     res.status(400).json({
         'status': '400',
-        'messages': err.messages,
+        'messages': err,
         'data': {}
     })
 }
@@ -62,7 +62,7 @@ function error500(res, err) {
     console.log(err)
     res.status(500).json({
         'status': '500',
-        'messages': err.messages,
+        'messages': err,
         'data': {}
     })
 }
