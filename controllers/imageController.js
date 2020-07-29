@@ -27,8 +27,6 @@ const image_delete = async (req, res) => {
 
         const path = req.body.destination + req.body.binaryImage + ".jpg"
 
-        console.log(req.body)
-
         if (retVal) {
             fs.unlink(path, function () {
                 returnFormat.success200(res, retVal)

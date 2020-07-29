@@ -13,7 +13,10 @@ module.exports = authorizeToken = (req, res, next) => {
 
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        if (err) return returnFormat.forbidden403(res)
+        if (err) {
+            console.log(err)
+            return returnFormat.forbidden403(res)
+        }
 
         req.user = user
         next()
