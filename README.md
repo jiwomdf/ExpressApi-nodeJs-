@@ -9,7 +9,7 @@ What's I use on this project?
 - Secured with JWT Auth using access token & refresh token
 - Secured also with reCAPTCHA
 - Secured form validation with Joi
-- Use middlewares like multer, morgan etc.
+- Use middlewares like multer (image parsher), sharp (image size reducer), etc.
 - the other project feature is under development!
 
 
