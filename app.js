@@ -33,6 +33,9 @@ app.use(morgan('dev'))
 app.use(cors())
 
 //routes
+app.get('/', (req, res) => {
+    res.send('<h1>Testing</h1>')
+})
 app.use('/blog/', blogRoutes)
 app.use('/animal/', animalRoutes)
 app.use('/user/', userRoutes)

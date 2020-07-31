@@ -2,14 +2,21 @@ const bcryipt = require('bcrypt')
 const User = require('../model/user')
 const returnFormat = require('./returnFormat')
 const Joi = require('@hapi/joi')
+const fetch = require('node-fetch');
 
 const user_register = async (req, res) => {
 
     const userRequest = req.body
 
-    let validate = await validateRegister(req.body)
+    let validateCap = await validateCaptcha(req)
+    if (!validateCap.isValid)
+        return returnFormat.error400(res, validateCap.message)
 
-    if (!validate.isValid) return returnFormat.validate422(res, validate.message)
+    let validate = await validateRegister(req.body)
+    if (!validate.isValid)
+        return returnFormat.validate422(res, validate.message)
+
+    console.log("ASUP")
 
     const user = await User.find({ userName: userRequest.userName })
 
@@ -45,7 +52,8 @@ const validateRegister = async user => {
         password: Joi.string().alphanum().min(8).max(30).required(),
         name: Joi.string().alphanum().min(3).max(15).required(),
         email: Joi.string().email().required(),
-        role: Joi.array().items(Joi.string())
+        role: Joi.array().items(Joi.string()),
+        captcha: Joi.allow()
     })
 
     try {
@@ -57,6 +65,31 @@ const validateRegister = async user => {
     catch (err) {
         return { isValid: false, message: err.details[0].message }
     }
+}
+
+const validateCaptcha = async req => {
+
+    if (!req.body.captcha)
+        return { isValid: false, message: 'Please select captcha' }
+
+    /* secret key */
+    const captchaSecretKey = process.env.CAPTCHA_SECRET_KEY
+
+    const verifyURL = "https://www.google.com/recaptcha/api/siteverify";
+
+    // Make a request to verifyURL
+    const body = await fetch(verifyURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `secret=${captchaSecretKey}&response=${req.body.captcha}`,
+    }).then(res => res.json());
+
+    // If not successful
+    if (body.success == undefined || body.success == null || !body.success)
+        return { isValid: false, message: 'Failed captcha verification' }
+
+    // If successful
+    return { isValid: true, message: 'Captcha passed' }
 }
 
 const user_get = async (req, res) => {

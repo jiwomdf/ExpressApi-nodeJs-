@@ -108,6 +108,7 @@ const animal_get_with_img_byUserName = async (req, res) => {
                 "imgID": itm.animal_pic._id,
                 "tags": itm.tags,
                 "name": itm.name,
+                "story": itm.story,
                 "expression": itm.expression,
                 "diet": itm.diet,
                 "isBaby": itm.isBaby,

@@ -56,7 +56,6 @@ const validateCaptcha = async req => {
     }).then(res => res.json());
 
     // If not successful
-    console.log(body)
     if (body.success == undefined || body.success == null || !body.success)
         return { isValid: false, message: 'Failed captcha verification' }
 
