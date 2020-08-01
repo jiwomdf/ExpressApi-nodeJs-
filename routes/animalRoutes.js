@@ -10,4 +10,5 @@ router.delete('/:id', authorizeMiddleware, animalController.animal_delete)
 router.get('/:id', animalController.animal_get_byID)
 router.post('/picture/:userName', authorizeMiddleware, animalController.animal_get_with_img_byUserName)
 router.post('/picture', animalController.animal_get_with_img)
+router.post('/dynamic', animalController.animal_get_with_img_dynamicParam)
 module.exports = router
