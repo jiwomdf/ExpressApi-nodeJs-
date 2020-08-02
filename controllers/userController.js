@@ -1,4 +1,4 @@
-const bcryipt = require('bcrypt')
+const bcryipt = require('bcrypt-nodejs')
 const User = require('../model/user')
 const returnFormat = require('./returnFormat')
 const Joi = require('@hapi/joi')
