@@ -3,7 +3,7 @@ This is the <b>Backend</b> API of Animal Express API Project. <br>
 This API provide Animals picture and data from the contributor. <br>
 You can see this app here http://128.199.125.19/
 
-What I use on this project?
+What I use in this project?
 - using express js as back end stack
 - using mongodb as database stack
 - Secured with JWT Auth using access token & refresh token
