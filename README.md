@@ -7,6 +7,7 @@ What I use in this project?
 - using express js as back end stack
 - using mongodb as database stack
 - Secured with JWT Auth using access token & refresh token
+- Password secured with one way encryption
 - Secured also with reCAPTCHA
 - Secured form validation with Joi
 - Use middlewares like multer (image parsher), sharp (image size reducer), etc.
