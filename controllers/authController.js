@@ -40,6 +40,33 @@ const login = async (req, res) => {
     }
 }
 
+const login_mobile = async (req, res) => {
+    let validate = await validateLogin(req.body)
+    if (!validate.isValid)
+        return returnFormat.validate422(res, validate.message)
+
+    /* check if user is exists in users collections */
+    const user = await User.findOne({ userName: req.body.userName })
+
+    if (user == null || user == undefined)
+        return returnFormat.validate422(res, 'Cannot find user')
+
+    try {
+        const isValid = await bcryipt.compare(req.body.password, user.password)
+        if (isValid) {
+            let refreshToken = createJwt(res, user)
+
+            /* check user login in auths collections */
+            await lookupAuth(req, user, refreshToken)
+        }
+        else
+            return returnFormat.validate422(res, "password incorrect")
+    }
+    catch (err) {
+        return returnFormat.error500(res, err)
+    }
+}
+
 const validateCaptcha = async req => {
 
     if (!req.body.captcha)
@@ -205,6 +232,7 @@ function generateAccessToken(userName) {
 
 module.exports = {
     login,
+    login_mobile,
     logout,
     token,
     checkLogin
